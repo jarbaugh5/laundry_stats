@@ -1,0 +1,64 @@
+http://www.laundryview.com/lvs.php is the base page
+
+Inside <div class='home-schoolinfo'> there is a table
+
+* Select all <a> tags within that and get their hrefs
+* From the hrefs get the GET field lr
+* It contains the location id
+
+For data on a particular room, execute the following query:
+
+```http://www.laundryview.com/dynamicRoomData.php?location=locationId```
+
+With locationId 1394832:
+
+&loggedIn=0:
+&whiteBoard=Never rub a fresh stain with bar soap. Soap sets many stains.:
+&machineStatus1=1:39:0:6440:39:1:0:0:1:
+&machineStatus2=1:38:0:6441:38:1:0:0:1:
+&machineStatus3=1:39:0:6442:39:1:0:0:1:
+&machineStatus4=1:39:0:6443:39:1:0:0:1:
+&machineStatus5=1:60:0:6444:60:1:0:0:1:
+1:60:0:6445:60:1:0:0:1:
+&machineStatus6=1:60:0:6446:60:1:0:0:1:
+1:60:0:6447:60:1:0:0:1:
+&machineStatus7=1:0:0:0:0:0:
+
+With locationId get static room data:
+http://www.laundryview.com/staticRoomData.php?location=1394832
+
+&name=BUSH HALL:
+&zoomLevel=10:
+&machineScale=167.00:
+&roomOrientation=1:
+&idleVisible=false&offlineVisible=true&whiteBoardCoords=10:240:
+&wallColor=4891ce&bgColor=48,15,0&borderColor=72,145,206&upsideDownStacks=:
+&disableTimeRemainDryers=0:
+&disableTimeRemainWashers=0:
+&whiteBoardPoint1=230.00:240.00:
+&whiteBoardPoint2=-230.00:240.00:
+&point1=230.00:240.00:
+&point2=-230.00:240.00:
+&point3=-230.00:-240.00:
+&point4=230.00:-240.00:
+&point5=230.00:240.00:
+&doorData1=D:230.00:200.00:230.00:-240.00:230.00:240.00:
+&machineData1=200.35:-133.65:NW:washFL:01:6440:0::
+&machineData2=200.35:-71.55:NW:washFL:02:6441:0::
+&machineData3=200.35:-9.44:NW:washFL:03:6442:0::
+&machineData4=200.35:52.70:NW:washFL:04:6443:0::
+&machineData5=-187.90:-24.95:SE:dblDry:05:6444:0:
+:06:6445:0:
+&machineData6=-63.65:-195.80:SW:dblDry:07:6446:0:
+:08:6447:0:
+&machineData7=-203.45:145.90:SE:tableSm::::::
+
+
+So...
+* First get static data, aka room name and machineData
+* Use regex data to get all the machines and their type wash/dry
+* Then with dynamic, we want all machines so use a regex to get machineStatus[1-9]
+* The data is separated with & and :
+* For dynamic data the fields are split like this:
+*       available(0-1):timeleft(minutes):unknown:idnum?:totalRunTime:unknown:message:unknown:unknown:unknown:
+* Just process the results as URI args and then split the machine values on colons
